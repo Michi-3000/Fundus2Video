@@ -6,6 +6,9 @@ Published at **MICCAI 2024**.
 You can find the paper [here](https://link.springer.com/chapter/10.1007/978-3-031-72378-0_64).
 
 ### Dependencies
+
+This code is built upon the **pix2pixHD** framework developed by NVIDIA, which can be found at [pix2pixHD GitHub repository](https://github.com/NVIDIA/pix2pixHD).  
+
 Install the required dependencies using:
 ```bash
 pip install -r requirements.txt
