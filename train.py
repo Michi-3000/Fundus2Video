@@ -19,7 +19,6 @@ from datetime import datetime
 import pandas as pd
 from options.test_options import TestOptions
 import imageio
-from show import *
 import sys
 from metrics.calculate_fvd import calculate_fvd
 from metrics.calculate_psnr import calculate_psnr
