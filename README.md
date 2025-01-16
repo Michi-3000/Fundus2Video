@@ -3,7 +3,7 @@
 This repository contains the official implementation of our paper:  
 **Fundus2Video: Cross-Modal Angiography Video Generation from Static Fundus Photography with Clinical Knowledge Guidance**  
 Published at **MICCAI 2024**.  
-You can find the paper [here](https://arxiv.org/pdf/2408.15217).
+You can find the paper [here](https://link.springer.com/chapter/10.1007/978-3-031-72378-0_64).
 
 ### Dependencies
 Install the required dependencies using:
