@@ -94,7 +94,6 @@ opt.load_features = True
 saveval_freq = 5
 
 f='./data.csv'# The path you save the training dataframe
-f='/home/healgoo/risk_factor/vessel/generation/super/pix2pixHD/tasks/cross_modality/FA/video/co2favideo_dis.csv'
 df=pd.read_csv(f)
 df=df[~df.Phase.isin(['A','C'])]
 df.loc[df.Phase=='AV','Phase']='V'
@@ -127,7 +126,7 @@ opttest.load_features = True
 
 data_loader = CreateDataLoader(opt)
 test_loader = CreateDataLoader(opttest)
-opt.name = opt.name+'/maskNCE_'+now.strftime("%m-%d-%H%M")+'_'+str(opt.w)#+'_'+opt.which_epoch
+opt.name = opt.name+'/maskNCE_'+now.strftime("%m-%d-%H%M")+'_'+str(opt.w)
 visualizer = Visualizer(opt)
 TEST.to_csv(os.path.join(opt.checkpoints_dir, opt.name, 'test.csv'))
 VALID.to_csv(os.path.join(opt.checkpoints_dir, opt.name, 'val.csv'))
@@ -179,7 +178,6 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         ############## Forward Pass ######################
         B,N,C,W,H = Variable(data['image']).size()
-        #print(B,N,C,W,H)
         
         reals = []
         lbs = []
