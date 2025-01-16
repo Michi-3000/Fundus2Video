@@ -77,7 +77,7 @@ class AlignedDataset(BaseDataset):
     def __getitem__(self, index):    
         
         s=self.df[self.df.pid_eye==self.idxs[index]]
-        s = s.groupby('Phase').sample(4,replace=True)#For each modality, sample 4 frames
+        s = s.groupby('Phase').sample(4,replace=True)#For each phase, sample 4 frames
         s=s.drop_duplicates()
         max_len=len(s)
         s = s.sort_values('level_1')[:max_len]#Sort in time
@@ -103,8 +103,6 @@ class AlignedDataset(BaseDataset):
         mask=ndimage.binary_fill_holes(mask).astype(np.uint8)
 
         tensors=[]
-        if not self.opt.no_flip:
-            aug = 0
         if len(paths)<max_len+1:
             paths=paths+[paths[-1]]*(max_len+1-len(paths))
         for i, p in enumerate(paths):
@@ -119,17 +117,16 @@ class AlignedDataset(BaseDataset):
 
             B=crop_image_from_mask(fa,mask)
             if not self.opt.no_flip:
-                if aug>0:
-                    try:
-                        if i==0:
-                            h,w=B.shape[:2]
-                            x = random.randint(0,w//(1.5))
-                            x2=  random.randint(x+w//3,w)
-                            y = random.randint(0, h//(1.5))
-                            y2 = random.randint(y+h//3, h)
-                        B = B[y:y2,x:x2,:]
-                    except:
-                        aug=0
+                try:
+                    if i==0:
+                        h,w=B.shape[:2]
+                        x = random.randint(0,w//(1.5))
+                        x2=  random.randint(x+w//3,w)
+                        y = random.randint(0, h//(1.5))
+                        y2 = random.randint(y+h//3, h)
+                    B = B[y:y2,x:x2,:]
+                except:
+                    continue
 
             B=cv2.resize(B,(self.w,self.w))
 
