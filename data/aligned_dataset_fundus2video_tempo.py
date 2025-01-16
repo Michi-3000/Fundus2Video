@@ -14,7 +14,55 @@ import copy
 from options.test_options import TestOptions
 import sys
 from torchvision.transforms._transforms_video import NormalizeVideo
-from fundus_util import *
+
+
+def remove_small_objects(img, min_size=50,keeplargest=False,returnN=False):
+        # find all your connected components (white blobs in your image)
+    try:
+        nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img, connectivity=8)
+        #taking out the background which is also considered a component, but most of the time we don't want that.
+        sizes = stats[1:, -1]
+        nb_components = nb_components - 1
+        img2 = img
+        # for every component in the image, you keep it only if it's above min_size
+        maxs=max(sizes)
+        N=nb_components
+        for i in range(0, nb_components):
+            if keeplargest:
+                if sizes[i] < maxs:
+                    img2[output == i + 1] = 0
+                    N-=1	
+            elif sizes[i] < min_size:
+                img2[output == i + 1] = 0
+                N-=1	
+        if returnN:
+            return img2,N  
+        else:
+            return img2
+    except:
+        # print('')
+        return img
+
+def dilate(im,k=5):
+    # kernel = np.ones((k,k),np.uint8)
+    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(k,k))
+    im = cv2.dilate(im,kernel,iterations = 1)
+    return im
+
+def crop_image_from_mask(img,mask):
+    # img[mask==0]=0
+    if img.ndim ==2:
+        return img[np.ix_(mask.any(1),mask.any(0))]
+    elif img.ndim==3:
+        check_shape = img[:,:,0][np.ix_(mask.any(1),mask.any(0))].shape[0]
+        if (check_shape == 0): # image is too dark so that we crop out everything,
+            return img # return original image
+        else:
+            img1=img[:,:,0][np.ix_(mask.any(1),mask.any(0))]
+            img2=img[:,:,1][np.ix_(mask.any(1),mask.any(0))]
+            img3=img[:,:,2][np.ix_(mask.any(1),mask.any(0))]
+            img = np.stack([img1,img2,img3],axis=-1)
+        return img 
 
 class AlignedDataset(BaseDataset):
     def initialize(self, opt):
